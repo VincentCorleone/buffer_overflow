@@ -41,3 +41,6 @@ The function main() will call the function overflow(),then return to main().In n
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1788625-ac495430e79b26aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 function fun() is executed!
+
+#How to run this c program
+On windows OS,you'd better use mingw to compile it.A [mingw-get-inst-20120426.exe] is provided here.
