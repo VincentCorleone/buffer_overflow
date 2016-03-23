@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Buffer overflow by g70711</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Buffer overflow</h1>
+      <h2 class="project-tagline">A c program on windows showing a example of buffer overflow</h2>
+      <a href="https://github.com/g70711/buffer_overflow" class="btn">View on GitHub</a>
+      <a href="https://github.com/g70711/buffer_overflow/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/g70711/buffer_overflow/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p>This is a c program on windows showing a example of buffer overflow.</p>
+
+<h1>
+<a id="knowledge-backgroud" class="anchor" href="#knowledge-backgroud" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Knowledge backgroud</h1>
+
+<p>When a function is called,the parameters of it and a address will be pushed in to the stack.This address(let us call it RET)  points to a instruction which will be executed next if the function call didn't happen.Then internal variables of the called function will be pushed into the stack.
+The later something is pushed to the stack,the lower the logic address of it in the memory will be.So the internal variable has lower address than RET.If we set the the value of the internal variable longer that it should be,we can override the value of the RET.Then the program will execute the instruction pointed by the RET,which is modified by us.</p>
+
+<h1>
+<a id="explanations-on-this-c-program" class="anchor" href="#explanations-on-this-c-program" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Explanations on this c program</h1>
+
+<div class="highlight highlight-source-c"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>stdio.h<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>string.h<span class="pl-pds">&gt;</span></span>
+
+<span class="pl-k">void</span> <span class="pl-en">overflow</span>(<span class="pl-k">const</span> <span class="pl-k">char</span>* input)
+{
+    <span class="pl-k">char</span> buf[<span class="pl-c1">8</span>];
+    <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>Virtual address of 'buf' = Ox<span class="pl-c1">%p</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>, buf);
+    <span class="pl-c1">strcpy</span>(buf,input);
+}
+
+<span class="pl-k">void</span> <span class="pl-en">fun</span>()
+{
+    <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>Function 'fun' has been called without an explicitly invocation.<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>);
+    <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>Buffer Overflow attack succeeded!<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>);
+}
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>(<span class="pl-k">int</span> argc, <span class="pl-k">char</span>* argv[])
+{
+    <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>Virtual address of 'overflow' = Ox<span class="pl-c1">%p</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>,overflow);
+    <span class="pl-c1">printf</span>(<span class="pl-s"><span class="pl-pds">"</span>Virtual address of 'fun' = Ox<span class="pl-c1">%p</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>,fun);
+    <span class="pl-k">char</span> input[<span class="pl-c1">30</span>]=<span class="pl-s"><span class="pl-pds">"</span>01234567890123456789<span class="pl-pds">"</span></span>;
+    <span class="pl-k">char</span> add[<span class="pl-c1">5</span>];
+    *((<span class="pl-k">int</span>*)add) = fun;
+    add[<span class="pl-c1">4</span>] = <span class="pl-c1">0</span>;
+    <span class="pl-c1">strcat</span>(input, add);
+    <span class="pl-c1">overflow</span>(input);
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+
+<p>The function main() will call the function overflow(),then return to main().In normal circumstances,the function fun() will not be executed.But using the knowledge above we can let the function fun() be executed.</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1788625-ac495430e79b26aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+
+<p>function fun() is executed!</p>
+
+<h1>
+<a id="how-to-run-this-c-program" class="anchor" href="#how-to-run-this-c-program" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to run this c program</h1>
+
+<p>On windows OS,you'd better use mingw to compile it.A [mingw-get-inst-20120426.exe] is provided here.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/g70711/buffer_overflow">Buffer overflow</a> is maintained by <a href="https://github.com/g70711">g70711</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
