@@ -1,14 +1,3 @@
----
-title: An experiment on buffer overflow
-date: 2016-03-22 22:39:00
-update: 2016-05-05 12:56:00
-categories:
-- 技术
-tags:
-- C
----
-
-
 This is a c program on windows showing a example of buffer overflow.
 # Knowledge backgroud
 When a function is called,the parameters of it and a address will be pushed in to the stack.This address(let us call it RET)  points to a instruction which will be executed next after the function call.Then internal variables of the called function will be pushed into the stack.
